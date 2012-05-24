@@ -35,6 +35,8 @@ describe("Backbone Factory", function() {
                                     }
                                    );
 
+      this.builtUserObject = BackboneFactory.build('user');
+      this.builtPostObject = BackboneFactory.build('post');
       this.postObject = BackboneFactory.create('post');
       this.userObject = BackboneFactory.create('user');
     });
@@ -43,23 +45,24 @@ describe("Backbone Factory", function() {
     it("return an instance of the Backbone Object requested", function() {
       expect(this.postObject instanceof Post).toBeTruthy();
       expect(this.userObject instanceof User).toBeTruthy();
+      expect(this.builtUserObject instanceof User).toBeTruthy();
     });
           
     // Not sure if this test is needed. But what the hell!
     it("should preserve the defaults if not overriden", function() {
       expect(this.postObject.get('title')).toBe('Default Title');
+      expect(this.builtPostObject.get('title')).toBe('Default Title');
     });
-
-    
 
     it("should use the defaults supplied when creating objects", function() {
       expect(this.userObject.get('name')).toBe('Backbone User');
+      expect(this.builtUserObject.get('name')).toBe('Backbone User');
     });
 
     it("should work with sequences", function(){
-      expect(this.userObject.get('email')).toBe('person2@example.com');
+      expect(this.userObject.get('email')).toBe('person4@example.com');
       var anotherUser = BackboneFactory.create('user');
-      expect(anotherUser.get('email')).toBe('person3@example.com');
+      expect(anotherUser.get('email')).toBe('person5@example.com');
     });
 
     it("should work if other factories are passed", function(){
@@ -75,12 +78,33 @@ describe("Backbone Factory", function() {
       expect(userWithEmail.get('email')).toBe('overriden@example.com');
     });
 
-    it("should have an id", function() {
+    it("should override defaults if arguments are passed on build", function(){
+      var userWithEmail = BackboneFactory.build('user', function(){
+                                             return {
+                                                email: 'overriden@example.com'
+                                              };
+                            });
+      expect(userWithEmail.get('email')).toBe('overriden@example.com');
+    });
+
+    it("should create with an id", function() {
       expect(this.userObject.id).toBeDefined();
     });
 
     it("should have an id that increments on creation", function(){
       var firstID = BackboneFactory.create('user').id;
+      var secondID = BackboneFactory.create('user').id;
+      expect(secondID).toBe(firstID + 1);
+    });
+
+    it("should build objects without ids", function(){
+      var id = BackboneFactory.build('user').id;
+      expect(id).toBeUndefined();
+    });
+
+    it("should not increment ids on build", function(){
+      var firstID = BackboneFactory.create('user').id;
+      var builtId = BackboneFactory.build('user').id;
       var secondID = BackboneFactory.create('user').id;
       expect(secondID).toBe(firstID + 1);
     });

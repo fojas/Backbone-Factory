@@ -17,11 +17,18 @@
       if(defaults === undefined) defaults = function(){return {}};
 
       // The object creator
-      this.factories[factory_name] = function(options){
-        if(options === undefined) options = function(){return {}};
-        arguments =  _.extend({}, {id: BackboneFactory.next("_" + factory_name + "_id")}, defaults.call(), options.call());
-        return new klass(arguments);
-      };
+      this.factories[factory_name] = {
+        create : function(options){
+          if(options === undefined) options = function(){return {}};
+          arguments =  _.extend({}, {id: BackboneFactory.next("_" + factory_name + "_id")}, defaults.call(), options.call());
+          return new klass(arguments);
+        },
+        build : function(options){
+          if(options === undefined) options = function(){return {}};
+          arguments =  _.extend({}, defaults.call(), options.call());
+          return new klass(arguments);
+        }
+      }
 
       // Lets define a sequence for id
       BackboneFactory.define_sequence("_"+ factory_name +"_id", function(n){
@@ -33,7 +40,14 @@
       if(this.factories[factory_name] === undefined){
         throw "Factory with name " + factory_name + " does not exist";
       }
-      return this.factories[factory_name].apply(null, [options]);        
+      return this.factories[factory_name].create.apply(null, [options]);
+    },
+
+    build : function(factory_name,options){
+      if(this.factories[factory_name] === undefined){
+        throw "Factory with name " + factory_name + " does not exist";
+      }
+      return this.factories[factory_name].build.apply(null, [options]);
     },
 
     define_sequence: function(sequence_name, callback){

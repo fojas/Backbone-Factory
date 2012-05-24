@@ -49,11 +49,20 @@ var userFactory = BackboneFactory.define('user', User);
 To use these factories, 
 
 ```javscript
+//saved instance
 this.postObject = BackboneFactory.create('post');
 this.userObject = BackboneFactory.create('user');
 ```
 
-This will create objects using the [defaults](http://documentcloud.github.com/backbone/#Model-defaults) you have in your class definitions.
+or
+
+```javscript
+// unsaved instance
+this.postObject = BackboneFactory.build('post');
+this.userObject = BackboneFactory.build('user');
+```
+
+This will create or build objects using the [defaults](http://documentcloud.github.com/backbone/#Model-defaults) you have in your class definitions.
 
 
 ### Defining Sequences 
