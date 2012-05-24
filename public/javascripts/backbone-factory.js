@@ -36,18 +36,34 @@
       });
     },
 
-    create: function(factory_name, options){
-      if(this.factories[factory_name] === undefined){
+    factory : function(method, factory_name, options){
+      if(!this.factories[factory_name] || !this.factories[factory_name][method]) {
         throw "Factory with name " + factory_name + " does not exist";
       }
-      return this.factories[factory_name].create.apply(null, [options]);
+      return this.factories[factory_name][method].apply(null, [options]);
+    },
+
+    factory_list : function(method, factory_name, count, options){
+      for(var list = [];count--;){
+        list.push(this.factory(method,factory_name,options));
+      }
+      return list;
+    },
+
+    create: function(factory_name, options){
+      return this.factory('create',factory_name,options)
     },
 
     build : function(factory_name,options){
-      if(this.factories[factory_name] === undefined){
-        throw "Factory with name " + factory_name + " does not exist";
-      }
-      return this.factories[factory_name].build.apply(null, [options]);
+      return this.factory('build',factory_name,options)
+    },
+
+    create_list: function(factory_name, count, options){
+      return this.factory_list('create',factory_name,count,options);
+    },
+
+    build_list : function(factory_name, count, options){
+      return this.factory_list('build',factory_name,count,options);
     },
 
     define_sequence: function(sequence_name, callback){

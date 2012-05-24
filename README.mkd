@@ -64,6 +64,25 @@ this.userObject = BackboneFactory.build('user');
 
 This will create or build objects using the [defaults](http://documentcloud.github.com/backbone/#Model-defaults) you have in your class definitions.
 
+### Using Lists
+
+To create an array of factory created objects, 
+
+```javscript
+//saved instance
+this.postObject = BackboneFactory.create_list('post',10);
+this.userObject = BackboneFactory.create_list('user',10);
+```
+
+or
+
+```javscript
+// unsaved instance
+this.postObject = BackboneFactory.build_list('post',10);
+this.userObject = BackboneFactory.build_list('user',10);
+```
+
+This will create or build 10 objects.
 
 ### Defining Sequences 
 
